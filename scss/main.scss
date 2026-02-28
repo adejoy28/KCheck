@@ -1,0 +1,14 @@
+// Main SCSS - Modular Architecture with BEM
+
+// Import abstracts (variables, mixins, functions)
+@use 'abstracts/variables';
+@use 'abstracts/mixins' as *;
+
+// Import base styles (reset, utilities)
+@use 'base/base';
+@use 'base/utilities';
+
+// Import components
+@use 'components/login';
+@use 'components/layout';
+@use 'components/table';

@@ -1,0 +1,378 @@
+/* Login Component - BEM Structure */
+
+/* Login Page Overrides */
+body.login-page {
+    overflow: auto;
+    background: var(--glo-login-gradient);
+}
+
+body.login-page .topbar,
+body.login-page .layout__sidebar,
+body.login-page .footer {
+    display: none;
+}
+
+body.login-page .layout {
+    margin-top: 0;
+    height: 100vh;
+}
+
+body.login-page .layout__main {
+    background: transparent;
+}
+
+body.login-page .layout__content {
+    padding: 0;
+}
+
+/* Base/Mobile Styles */
+.login {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg) var(--spacing-md);
+    overflow: auto;
+}
+
+.login__card {
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+    display: flex;
+    min-height: 500px;
+    animation: slideInUp var(--transition-slow) ease-out;
+}
+
+.login__brand {
+    background: var(--glo-blue-gradient);
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: var(--white);
+    flex: 1;
+}
+
+.login__logo {
+    width: 120px;
+    height: 120px;
+    background: var(--white);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xxxl);
+    color: var(--glo-blue-light);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-lg);
+}
+
+.login__title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-normal);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.4;
+}
+
+.login__version {
+    font-size: var(--font-size-base);
+    opacity: 0.8;
+}
+
+.login__form {
+    flex: 1;
+    padding: var(--spacing-xxl) var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login__heading {
+    color: var(--gray-800);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-xxxxl);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+}
+
+.login__alert {
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-base);
+}
+
+.login__alert--error {
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
+}
+
+.login__alert--success {
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
+}
+
+.login__group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.login__label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    color: var(--gray-700);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+}
+
+.login__input {
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border: 2px solid var(--gray-100);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    transition: all var(--transition-normal);
+    background: var(--gray-50);
+}
+
+.login__input:focus {
+    outline: none;
+    border-color: var(--glo-blue-light);
+    background: var(--white);
+    box-shadow: var(--shadow-focus);
+}
+
+.login__checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.login__checkbox-input {
+    margin-right: var(--spacing-sm);
+    margin-top: 0;
+}
+
+.login__checkbox-label {
+    font-size: var(--font-size-base);
+    color: var(--gray-700);
+}
+
+.login__button {
+    width: 100%;
+    padding: var(--spacing-md);
+    background: var(--glo-blue-gradient);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    margin-top: var(--spacing-sm);
+}
+
+.login__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(101, 138, 195, 0.3);
+}
+
+.login__button:active {
+    transform: translateY(0);
+}
+
+.login__forgot {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+}
+
+.login__forgot-link {
+    color: var(--glo-blue-light);
+    text-decoration: none;
+    font-size: var(--font-size-base);
+    transition: color var(--transition-normal);
+}
+
+.login__forgot-link:hover {
+    color: var(--glo-blue);
+    text-decoration: underline;
+}
+
+/* Tablet Media Query */
+@media (min-width: 768px) {
+    .login {
+        padding: var(--spacing-xxl) var(--spacing-lg);
+    }
+    
+    .login__brand {
+        padding: var(--spacing-xl);
+    }
+    
+    .login__logo {
+        width: 120px;
+        height: 120px;
+        font-size: var(--font-size-xxxl);
+    }
+    
+    .login__title {
+        font-size: var(--font-size-lg);
+    }
+    
+    .login__form {
+        padding: var(--spacing-xxl) var(--spacing-xl);
+    }
+    
+    .login__heading {
+        font-size: var(--font-size-xxxxl);
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .login__group {
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .login__input {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+    
+    .login__button {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-md);
+    }
+}
+
+/* Desktop Media Query */
+@media (min-width: 1200px) {
+    .login__card {
+        max-width: 1200px;
+        min-height: 600px;
+    }
+    
+    .login__brand {
+        padding: var(--spacing-xxl);
+    }
+    
+    .login__logo {
+        width: 150px;
+        height: 150px;
+        font-size: 60px;
+    }
+    
+    .login__title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .login__form {
+        padding: var(--spacing-xxl) var(--spacing-xxl);
+    }
+    
+    .login__heading {
+        font-size: var(--font-size-xxxxl);
+        margin-bottom: var(--spacing-xxl);
+    }
+    
+    .login__group {
+        margin-bottom: var(--spacing-xl);
+    }
+    
+    .login__input {
+        padding: var(--spacing-lg) var(--spacing-xl);
+        font-size: var(--font-size-md);
+    }
+    
+    .login__button {
+        padding: var(--spacing-lg);
+        font-size: var(--font-size-lg);
+        margin-top: var(--spacing-md);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .login__card {
+        flex-direction: column;
+        margin: var(--spacing-lg);
+        min-height: auto;
+    }
+    
+    .login__brand {
+        padding: var(--spacing-lg) var(--spacing-md);
+        min-height: auto;
+    }
+    
+    .login__logo {
+        width: 80px;
+        height: 80px;
+        font-size: 32px;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .login__title {
+        font-size: var(--font-size-base);
+    }
+    
+    .login__form {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+    
+    .login__heading {
+        font-size: var(--font-size-xxl);
+        margin-bottom: var(--spacing-lg);
+    }
+    
+    .login__group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .login__input {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+    
+    .login__button {
+        padding: var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+}
+
+@media (max-width: 480px) {
+    .login {
+        padding: var(--spacing-lg) var(--spacing-sm);
+    }
+    
+    .login__card {
+        margin: var(--spacing-sm);
+    }
+    
+    .login__brand {
+        padding: var(--spacing-md);
+    }
+    
+    .login__form {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+    
+    .login__heading {
+        font-size: var(--font-size-xl);
+    }
+}
+
+/* Animation */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,51 @@
+### Variables
+@baseUrl = http://localhost:5500
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OTg5MWQxODMzMTIwZTJkZGY3YWM3MCIsImlhdCI6MTc3MTYwNjQ5OSwiZXhwIjoxNzcyMjExMjk5fQ.A_e_uoxjBV9LU8OBrJaOmnb2Ay9WkdL5F0EDtzJI1vo
+@tokenStaff = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OTg5MjgyNjUwNmZkZjRmMzU1ZGQ3OSIsImlhdCI6MTc3MTYwNzUzMiwiZXhwIjoxNzcyMjEyMzMyfQ.cXfkqlFlCh_7qJCXoNJxSTZEVsvrZGRko8wUIyaW6zA
+@examId = 6998a1ee796484b00bc2b1c7
+
+
+### Get Exams
+GET {{baseUrl}}/api/exams
+content-type: application/json
+Authorization: Bearer {{tokenStaff}}
+
+### Create Exam
+POST {{baseUrl}}/api/exams
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "JavaScript Basics",
+  "description": "Test your JS fundamentals",
+  "duration": 10,
+  "questions": [
+    {
+      "text": "What does 'typeof null' return in JavaScript?",
+      "options": ["null", "undefined", "object", "string"],
+      "correctAnswer": 2
+    },
+    {
+      "text": "Which method adds an element to the end of an array?",
+      "options": ["push()", "pop()", "shift()", "unshift()"],
+      "correctAnswer": 0
+    },
+    {
+      "text": "What is the output of '0 == false'?",
+      "options": ["false", "true", "undefined", "TypeError"],
+      "correctAnswer": 1
+    }
+  ]
+}
+
+### Submit Exam
+
+POST {{baseUrl}}/api/exams/{{examId}}/submit
+Content-Type: application/json
+Authorization: Bearer {{tokenStaff}}
+
+{
+  "answers": [2, 0, 1],
+  "timeTaken": 145
+}
+

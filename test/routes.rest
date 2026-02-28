@@ -1,0 +1,39 @@
+### Variables
+@baseUrl = http://localhost:5500
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OTg5MWQxODMzMTIwZTJkZGY3YWM3MCIsImlhdCI6MTc3MTYwNjQ5OSwiZXhwIjoxNzcyMjExMjk5fQ.A_e_uoxjBV9LU8OBrJaOmnb2Ay9WkdL5F0EDtzJI1vo
+@tokenStaff = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5OTg5MjgyNjUwNmZkZjRmMzU1ZGQ3OSIsImlhdCI6MTc3MTYwNzUzMiwiZXhwIjoxNzcyMjEyMzMyfQ.cXfkqlFlCh_7qJCXoNJxSTZEVsvrZGRko8wUIyaW6zA
+
+### Login
+POST {{baseUrl}}/api/auth/login
+content-type: application/json
+
+# {
+#   "email": "admin@portal.com",
+#   "password": "admin1234"
+# }
+{
+  "username": "jane.doe@example.com",
+  "password": "password123"
+}
+
+### Register
+POST {{baseUrl}}/api/auth/register
+content-type: application/json
+Authorization: Bearer {{tokenStaff}}
+
+{
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "password": "password123",
+  "role": "staff"
+}
+
+### Get Users
+GET {{baseUrl}}/api/auth/users
+content-type: application/json
+Authorization: Bearer {{tokenStaff}}
+
+### Test a protected route:
+GET {{baseUrl}}/api/auth/me
+Authorization: Bearer {{tokenStaff}}
+

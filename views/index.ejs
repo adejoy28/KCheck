@@ -1,0 +1,356 @@
+<!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar__left">
+            <div class="hamburger">
+                <span class="hamburger__line"></span><span class="hamburger__line"></span><span class="hamburger__line"></span>
+            </div>
+            <div class="logo">glo</div>
+            <span class="topbar__title">KNOWLEDGE CHECK SYSTEM (CBT)</span>
+        </div>
+        <div class="topbar__right">
+            <div class="topbar__user">JA254510</div>
+            <button class="topbar__logout" onclick="handleLogout()">
+                <span class="logout-icon">⏻</span> Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div class="layout">
+
+        <!-- Sidebar -->
+        <div class="layout__sidebar">
+            <div class="sidebar__item sidebar__item--active" onclick="setActive(this)">
+                <span class="sidebar__icon">📝</span> New Test
+            </div>
+            <div class="sidebar__item" onclick="setActive(this)">
+                <span class="sidebar__icon">📊</span> Dashboard
+            </div>
+            <div class="sidebar__item" onclick="setActive(this)">
+                <span class="sidebar__icon">👥</span> Users
+            </div>
+            <div class="sidebar__item" onclick="setActive(this)">
+                <span class="sidebar__icon">�</span> Questions
+            </div>
+            <div class="sidebar__item" onclick="setActive(this)">
+                <span class="sidebar__icon">📈</span> Reports
+            </div>
+            <div class="sidebar__item" onclick="setActive(this)">
+                <span class="sidebar__icon">⚙️</span> Settings
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="layout__main">
+            <div class="layout__content">
+
+                <div class="page-header">NEW TESTS</div>
+
+                <!-- User Info Bar -->
+                <div class="user-info-bar">
+                    <span class="user-info-text">User Logged In: <strong>JA254510</strong></span>
+                    <span class="user-info-text">Status: <span class="status-active">Active</span></span>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="toolbar">
+                    <button class="toolbar__button" onclick="createNewTest()">
+                        <span class="btn-icon">➕</span> Create New Test
+                    </button>
+                    <button class="toolbar__button" onclick="importQuestions()">
+                        <span class="btn-icon">📥</span> Import Questions
+                    </button>
+                    <button class="toolbar__button" onclick="exportResults()">
+                        <span class="btn-icon">📤</span> Export Results
+                    </button>
+                    <input class="toolbar__search" type="text" placeholder="Search tests..." id="testSearch" />
+                </div>
+
+                <!-- Table -->
+                <div class="table__wrap">
+                    <table class="table">
+                        <thead>
+                            <!-- Column Headers -->
+                            <tr>
+                                <th class="table__header table__cell--id">Test ID <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--msisdn">Test Name <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--category">Category <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--imsi">Questions <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--date">Duration <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--category">Status <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--date">Created Date <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--action">Actions</th>
+                            </tr>
+                            <!-- Column Filters -->
+                            <tr class="table__filter-row">
+                                <th>
+                                    <div class="table__filter-wrap">
+                                        <span class="table__filter-icon">🔍</span>
+                                        <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="table__filter-wrap">
+                                        <span class="table__filter-icon">🔍</span>
+                                        <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="table__filter-wrap">
+                                        <span class="table__filter-icon">🔍</span>
+                                        <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="table__filter-wrap">
+                                        <span class="table__filter-icon">🔍</span>
+                                        <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="table__filter-wrap">
+                                        <span class="table__filter-icon">🔍</span>
+                                        <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="table__filter-wrap">
+                                        <span class="table__filter-icon">🔍</span>
+                                        <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="table__date-wrap">
+                                        <span class="table__filter-icon">📅</span>
+                                        <input class="table__date-input" type="date" oninput="filterTable()" />
+                                    </div>
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr class="table__empty-row">
+                                <td colspan="8">No tests to display.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <span class="footer__text"> 2024 Globacom Knowledge Check System. All rights reserved.</span>
+    </div>
+
+    <script>
+        // ── Sidebar active state ──
+        const setActive = (el) => {
+            document.querySelectorAll('.sidebar__item').forEach(i => i.classList.remove('sidebar__item--active'));
+            el.classList.add('sidebar__item--active');
+        };
+
+        // ── Sample data (replace with real API calls) ──
+        const allData = [
+            // Uncomment to see data rows:
+            { id: 'TST001', name: 'JavaScript Basics', category: 'Programming', questions: 20, duration: '30 min', status: 'Active', createdDate: '2024-01-15' },
+            { id: 'TST002', name: 'Network Fundamentals', category: 'Networking', questions: 25, duration: '45 min', status: 'Draft', createdDate: '2024-01-16' },
+        ];
+
+        let filteredData = [...allData];
+
+        const renderTable = (data) => {
+            const tbody = document.getElementById('tableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr class="table__empty-row"><td colspan="8">No tests to display.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(row => `
+        <tr>
+          <td>${row.id}</td>
+          <td>${row.name}</td>
+          <td>${row.category}</td>
+          <td>${row.questions}</td>
+          <td>${row.duration}</td>
+          <td><span class="status-badge status-${row.status.toLowerCase()}">${row.status}</span></td>
+          <td>${row.createdDate}</td>
+          <td>
+            <button class="action-btn" onclick="editTest('${row.id}')" title="Edit">✏️</button>
+            <button class="action-btn" onclick="deleteTest('${row.id}')" title="Delete">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+        };
+
+        // ── Column filter logic ──
+        const filterTable = () => {
+            const filters = Array.from(document.querySelectorAll('.table__filter-input, .table__date-input'))
+                .map(i => i.value.toLowerCase().trim());
+
+            filteredData = allData.filter(row => {
+                const vals = [row.id, row.name, row.category, row.questions.toString(), row.duration, row.status, row.createdDate, ''];
+                return vals.every((v, i) => !filters[i] || v.toLowerCase().includes(filters[i]));
+            });
+
+            renderTable(filteredData);
+        };
+
+        // ── Test search ──
+        const testSearch = () => {
+            const searchTerm = document.getElementById('testSearch').value.trim();
+            if (!searchTerm) {
+                renderTable(allData);
+                return;
+            }
+            const result = allData.filter(r => 
+                r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                r.id.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            renderTable(result);
+        };
+
+        // Enter key on search
+        document.getElementById('testSearch').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') testSearch();
+        });
+
+        // ── Action functions ──
+        const createNewTest = () => {
+            alert('Create New Test functionality would be implemented here');
+        };
+
+        const importQuestions = () => {
+            alert('Import Questions functionality would be implemented here');
+        };
+
+        const exportResults = () => {
+            alert('Export Results functionality would be implemented here');
+        };
+
+        const editTest = (testId) => {
+            alert(`Edit test ${testId} functionality would be implemented here`);
+        };
+
+        const deleteTest = (testId) => {
+            if (confirm(`Are you sure you want to delete test ${testId}?`)) {
+                alert(`Delete test ${testId} functionality would be implemented here`);
+            }
+        };
+
+        // ── Logout ──
+        const handleLogout = () => {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/auth/logout';
+            }
+        };
+
+        // ── Initial render ──
+        renderTable(allData);
+    </script>
+
+    <style>
+        /* Additional styles for the new interface */
+        .user-info-bar {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+        }
+
+        .user-info-text {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .status-active {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .toolbar__button {
+            background: var(--glo-blue);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+
+        .toolbar__button:hover {
+            background: var(--glo-blue-dark);
+        }
+
+        .btn-icon {
+            font-size: 14px;
+        }
+
+        .toolbar__search {
+            border: 1px solid var(--border);
+            background: white;
+            padding: 7px 12px;
+            font-size: 13px;
+            color: #555;
+            width: 250px;
+            outline: none;
+            margin-left: auto;
+        }
+
+        .toolbar__search:focus {
+            border-color: var(--glo-blue);
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14px;
+            margin-right: 4px;
+            border-radius: 3px;
+            transition: background 0.15s;
+        }
+
+        .action-btn:hover {
+            background: #f0f0f0;
+        }
+
+        /* Update column widths */
+        .col-id { width: 100px; }
+        .col-name { width: 200px; }
+        .col-category { width: 150px; }
+        .col-questions { width: 100px; }
+        .col-duration { width: 120px; }
+        .col-status { width: 100px; }
+        .col-date { width: 140px; }
+        .col-action { width: 80px; }
+    </style>

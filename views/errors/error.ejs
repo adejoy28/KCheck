@@ -1,0 +1,10 @@
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+    res.redirect("/");
+} %>
+
+<%= message %>
+<img src="<%= imgPath %>"
+    alt="Technical error illustration showing a broken network connection with scattered puzzle pieces symbolizing a disconnected state. The scene conveys a sense of disruption while maintaining a helpful, problem-solving tone"
+    class="image" />

@@ -1,0 +1,272 @@
+/* Table Components - BEM Structure */
+
+/* Base/Mobile Styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.table__wrap {
+    border: 1px solid var(--border);
+    background: var(--white);
+    overflow: auto;
+}
+
+.table__header {
+    background: var(--glo-blue-col);
+    color: var(--white);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    white-space: nowrap;
+    user-select: none;
+}
+
+.table__header:last-child {
+    border-right: none;
+}
+
+.table__sort {
+    font-size: 9px;
+    margin-left: var(--spacing-xs);
+    opacity: 0.85;
+}
+
+.table__filter-row th {
+    background: var(--white);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border-light);
+}
+
+.table__filter-row th:last-child {
+    border-right: none;
+}
+
+.table__filter-input {
+    width: 100%;
+    border: 1px solid var(--gray-300);
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--gray-700);
+    outline: none;
+    background: var(--white);
+    position: relative;
+}
+
+.table__filter-input:focus {
+    border-color: var(--glo-blue);
+}
+
+.table__filter-wrap {
+    position: relative;
+}
+
+.table__filter-icon {
+    position: absolute;
+    left: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--font-size-xs);
+    color: var(--gray-500);
+    pointer-events: none;
+}
+
+.table__date-wrap {
+    position: relative;
+}
+
+.table__date-input {
+    width: 100%;
+    border: 1px solid var(--gray-300);
+    padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--gray-700);
+    outline: none;
+    background: var(--white);
+}
+
+.table__date-input:focus {
+    border-color: var(--glo-blue);
+}
+
+.table__empty-row td {
+    padding: var(--spacing-lg) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--gray-600);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.table__row {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.table__row:hover {
+    background: #f5f8ff;
+}
+
+.table__cell {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--gray-800);
+    border-right: 1px solid var(--border-light);
+}
+
+.table__cell:last-child {
+    border-right: none;
+}
+
+/* Column Width Modifiers */
+.table__cell--id {
+    width: 120px;
+}
+
+.table__cell--msisdn {
+    width: 180px;
+}
+
+.table__cell--imsi {
+    width: 220px;
+}
+
+.table__cell--category {
+    width: 200px;
+}
+
+.table__cell--date {
+    width: 200px;
+}
+
+.table__cell--action {
+    width: 60px;
+}
+
+/* Tablet Media Query */
+@media (min-width: 768px) {
+    .table__header {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-sm) var(--spacing-md);
+        letter-spacing: 0.6px;
+    }
+    
+    .table__filter-input {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-lg);
+    }
+    
+    .table__date-input {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-lg);
+    }
+    
+    .table__empty-row td {
+        padding: var(--spacing-lg) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+    
+    .table__cell {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+}
+
+/* Desktop Media Query */
+@media (min-width: 1200px) {
+    .table__wrap {
+        box-shadow: var(--shadow-md);
+    }
+    
+    .table__header {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-md) var(--spacing-lg);
+        letter-spacing: 0.8px;
+    }
+    
+    .table__filter-input {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-xl);
+    }
+    
+    .table__date-input {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm) var(--spacing-md) var(--spacing-sm) var(--spacing-xl);
+    }
+    
+    .table__empty-row td {
+        padding: var(--spacing-xl) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+    
+    .table__cell {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .table__wrap {
+        border-radius: var(--radius-md);
+        margin: var(--spacing-sm);
+    }
+    
+    .table {
+        min-width: 600px;
+        font-size: var(--font-size-xs);
+    }
+    
+    .table__header {
+        font-size: 10px;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        letter-spacing: 0.4px;
+    }
+    
+    .table__filter-input {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-md);
+    }
+    
+    .table__date-input {
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-md);
+    }
+    
+    .table__empty-row td {
+        padding: var(--spacing-md) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    .table__cell {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    .table__cell--id {
+        width: 80px;
+    }
+    
+    .table__cell--msisdn {
+        width: 120px;
+    }
+    
+    .table__cell--imsi {
+        width: 150px;
+    }
+    
+    .table__cell--category {
+        width: 140px;
+    }
+    
+    .table__cell--date {
+        width: 140px;
+    }
+    
+    .table__cell--action {
+        width: 50px;
+    }
+}

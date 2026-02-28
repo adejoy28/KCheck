@@ -48,16 +48,16 @@
     --spacing-xxl: 48px;
     
     /* Typography */
-    --font-family: 'Roboto', sans-serif;
-    --font-size-xs: 11.5px;
+    --font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-size-xs: 10px;
     --font-size-sm: 12px;
-    --font-size-base: 14px;
-    --font-size-md: 16px;
-    --font-size-lg: 18px;
-    --font-size-xl: 20px;
-    --font-size-xxl: 24px;
+    --font-size-base: 16px;
+    --font-size-md: 18px;
+    --font-size-lg: 20px;
+    --font-size-xl: 24px;
+    --font-size-xxl: 28px;
     --font-size-xxxl: 32px;
-    --font-size-xxxxl: 36px;
+    --font-size-xxxxl: 40px;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;

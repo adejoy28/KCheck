@@ -1,25 +1,14 @@
 <div class="login">
     <div class="login__card">
         <div class="login__brand">
-            <div class="login__logo">GC</div>
+            <div class="login__logo">
+                <img src="/images/logo.png" alt="Globacom Logo" width="60" height="60">
+            </div>
             <h3 class="login__title">Knowledge Check</h3>
             <div class="login__version">Version 1.0.0</div>
         </div>
         <div class="login__form">
             <h2 class="login__heading">Login</h2>
-            
-            <% if (typeof error !== 'undefined' && error) { %>
-                <div class="login__alert login__alert--error">
-                    <%= error %>
-                </div>
-            <% } %>
-            
-            <% if (typeof message !== 'undefined' && message) { %>
-                <div class="login__alert login__alert--success">
-                    <%= message %>
-                </div>
-            <% } %>
-
             <form action="/auth/login" method="POST">
                 <div class="login__group">
                     <label class="login__label" for="username">Username</label>

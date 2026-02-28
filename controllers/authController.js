@@ -165,7 +165,7 @@ const getUsers = async (req, res) => {
  * ************************************ */
 async function accountLogout(req, res) {
     res.clearCookie("jwt")
-    res.redirect("/", {
+    res.render("auth/login", {
         title: 'Login',
         message: 'You have been successfully logged out.',
         error: null

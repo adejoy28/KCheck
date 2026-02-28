@@ -7,7 +7,7 @@ const protect = async (req, res, next) => {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).render('auth/login', {
-                title: '401 Unauthorized',
+                title: 'Login',
                 message: 'Please login to continue',
                 error: null
             });

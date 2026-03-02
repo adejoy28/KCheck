@@ -1,36 +1,124 @@
-<!-- Top Bar -->
-    <div class="topbar">
-        <div class="topbar__left">
-            <div class="hamburger">
-                <span class="hamburger__line"></span><span class="hamburger__line"></span><span class="hamburger__line"></span>
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/head') %>
+
+<body>
+    <div id="wrapper">
+        <%- include('partials/toast') %>
+
+        <%- include('partials/header') %>
+
+        <!-- Layout -->
+        <div class="layout">
+            <%- include('partials/sidebar') %>
+
+            <!-- Main Content Area -->
+            <div class="layout__main">
+                <div class="layout__content" id="mainContent">
+                    <!-- Content will be loaded here dynamically -->
+                </div>
             </div>
-            <div class="logo">glo</div>
-            <span class="topbar__title">KNOWLEDGE CHECK SYSTEM (CBT)</span>
         </div>
-        <div class="topbar__right">
-            <div class="topbar__user" id="currentUser">Loading...</div>
-            <button class="topbar__logout" onclick="handleLogout()">
-                <span class="logout-icon">⏻</span> Logout
-            </button>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span class="footer__text">© 2024 Globacom Knowledge Check System. All rights reserved.</span>
         </div>
     </div>
 
-    <!-- Layout -->
-    <div class="layout">
-        <%- include('partials/sidebar') %>
-
-        <!-- Main -->
-        <div class="layout__main">
-            <div class="layout__content">
-
-                <div class="page-header">NEW TESTS</div>
-
+    <script src="/js/script.js"></script>
+    <script>
+        // Page content templates
+        const pageTemplates = {
+            dashboard: `
+                <div class="page-header">DASHBOARD</div>
                 <!-- User Info Bar -->
                 <div class="user-info-bar">
                     <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
                     <span class="user-info-text">Status: <span class="status-active">Active</span></span>
                 </div>
-
+                <!-- Dashboard Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalExams">0</div>
+                            <div class="stat-label">Total Exams</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="activeExams">0</div>
+                            <div class="stat-label">Active Exams</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="totalUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="completedTests">0</div>
+                            <div class="stat-label">Completed Tests</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent Activity -->
+                <div class="dashboard-section">
+                    <h3>Recent Exams</h3>
+                    <div class="table__wrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="table__header">Exam Name</th>
+                                    <th class="table__header">Questions</th>
+                                    <th class="table__header">Duration</th>
+                                    <th class="table__header">Status</th>
+                                    <th class="table__header">Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentExamsTable">
+                                <tr class="table__empty-row">
+                                    <td colspan="5">Loading recent exams...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- Quick Actions -->
+                <div class="dashboard-section">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-card" onclick="loadPage('tests')">
+                            <div class="action-icon">➕</div>
+                            <div class="action-title">Create New Exam</div>
+                            <div class="action-description">Create a new knowledge check exam</div>
+                        </button>
+                        <button class="action-card" onclick="viewResults()">
+                            <div class="action-icon">📈</div>
+                            <div class="action-title">View Results</div>
+                            <div class="action-description">Analyze exam performance and results</div>
+                        </button>
+                        <button class="action-card" onclick="manageUsers()">
+                            <div class="action-icon">👥</div>
+                            <div class="action-title">Manage Users</div>
+                            <div class="action-description">Add or remove system users</div>
+                        </button>
+                    </div>
+                </div>
+            `,
+            tests: `
+                <div class="page-header">NEW TESTS</div>
+                <!-- User Info Bar -->
+                <div class="user-info-bar">
+                    <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
+                    <span class="user-info-text">Status: <span class="status-active">Active</span></span>
+                </div>
                 <!-- Toolbar -->
                 <div class="toolbar">
                     <button class="toolbar__button" onclick="createNewTest()">
@@ -44,12 +132,10 @@
                     </button>
                     <input class="toolbar__search" type="text" placeholder="Search tests..." id="testSearch" />
                 </div>
-
                 <!-- Table -->
                 <div class="table__wrap">
                     <table class="table">
                         <thead>
-                            <!-- Column Headers -->
                             <tr>
                                 <th class="table__header table__cell--id">Test ID <span class="table__sort">⇅</span></th>
                                 <th class="table__header table__cell--msisdn">Test Name <span class="table__sort">⇅</span></th>
@@ -60,7 +146,6 @@
                                 <th class="table__header table__cell--date">Created Date <span class="table__sort">⇅</span></th>
                                 <th class="table__header table__cell--action">Actions</th>
                             </tr>
-                            <!-- Column Filters -->
                             <tr class="table__filter-row">
                                 <th>
                                     <div class="table__filter-wrap">
@@ -114,24 +199,68 @@
                         </tbody>
                     </table>
                 </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <span class="footer__text">© 2024 Globacom Knowledge Check System. All rights reserved.</span>
-    </div>
-
-    <script>
-        // ── Sidebar active state ──
-        const setActive = (el) => {
-            document.querySelectorAll('.sidebar__item').forEach(i => i.classList.remove('sidebar__item--active'));
-            el.classList.add('sidebar__item--active');
+            `,
+            users: '<div class="page-header">USERS</div><p>Users management coming soon...</p>',
+            questions: '<div class="page-header">QUESTIONS</div><p>Questions management coming soon...</p>',
+            reports: '<div class="page-header">REPORTS</div><p>Reports section coming soon...</p>',
+            settings: '<div class="page-header">SETTINGS</div><p>Settings coming soon...</p>'
         };
 
-        // ── Load real data from API ──
+        // Load page content dynamically
+        function loadPage(page) {
+            const content = document.getElementById('mainContent');
+            content.innerHTML = pageTemplates[page] || '<div class="page-header">PAGE NOT FOUND</div>';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar__item').forEach(item => {
+                item.classList.remove('sidebar__item--active');
+            });
+            event.target.closest('.sidebar__item').classList.add('sidebar__item--active');
+            
+            // Initialize page-specific functionality
+            initializePage(page);
+        }
+
+        // Initialize page-specific functionality
+        function initializePage(page) {
+            if (page === 'dashboard') {
+                loadDashboardData();
+            } else if (page === 'tests') {
+                loadExams();
+                setupTestSearch();
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                const examsResponse = await fetch('/exams');
+                const exams = await examsResponse.json();
+                
+                document.getElementById('totalExams').textContent = exams.length;
+                document.getElementById('activeExams').textContent = exams.filter(e => e.isActive).length;
+                
+                const recentExamsTable = document.getElementById('recentExamsTable');
+                if (exams.length === 0) {
+                    recentExamsTable.innerHTML = '<tr class="table__empty-row"><td colspan="5">No exams found.</td></tr>';
+                } else {
+                    recentExamsTable.innerHTML = exams.slice(0, 5).map(exam => `
+                        <tr>
+                            <td>${exam.title}</td>
+                            <td>${exam.questions ? exam.questions.length : 0}</td>
+                            <td>${exam.duration} min</td>
+                            <td><span class="status-badge status-${exam.isActive ? 'active' : 'inactive'}">${exam.isActive ? 'Active' : 'Inactive'}</span></td>
+                            <td>${new Date(exam.createdAt).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                document.getElementById('recentExamsTable').innerHTML = '<tr class="table__empty-row"><td colspan="5">Error loading data.</td></tr>';
+            }
+        }
+
+        // Load exams data
         let allData = [];
         let filteredData = [];
 
@@ -152,19 +281,11 @@
                 
                 filteredData = [...allData];
                 renderTable(filteredData);
-                
-                // Load user info
-                const userResponse = await fetch('/auth/me');
-                if (userResponse.ok) {
-                    const user = await userResponse.json();
-                    document.getElementById('currentUser').textContent = user.name || user.email || 'Unknown User';
-                    document.getElementById('userInfo').textContent = user.name || user.email || 'Unknown User';
-                }
             } catch (error) {
                 console.error('Error loading exams:', error);
                 document.getElementById('tableBody').innerHTML = '<tr class="table__empty-row"><td colspan="8">Error loading exams. Please try again.</td></tr>';
             }
-        };
+        }
 
         const renderTable = (data) => {
             const tbody = document.getElementById('tableBody');
@@ -173,23 +294,22 @@
                 return;
             }
             tbody.innerHTML = data.map(row => `
-        <tr>
-          <td>${row.id}</td>
-          <td>${row.name}</td>
-          <td>${row.category}</td>
-          <td>${row.questions}</td>
-          <td>${row.duration}</td>
-          <td><span class="status-badge status-${row.status.toLowerCase()}">${row.status}</span></td>
-          <td>${row.createdDate}</td>
-          <td>
-            <button class="action-btn" onclick="editTest('${row.id}')" title="Edit">✏️</button>
-            <button class="action-btn" onclick="deleteTest('${row.id}')" title="Delete">🗑️</button>
-          </td>
-        </tr>
-      `).join('');
+                <tr>
+                    <td>${row.id}</td>
+                    <td>${row.name}</td>
+                    <td>${row.category}</td>
+                    <td>${row.questions}</td>
+                    <td>${row.duration}</td>
+                    <td><span class="status-badge status-${row.status.toLowerCase()}">${row.status}</span></td>
+                    <td>${row.createdDate}</td>
+                    <td>
+                        <button class="action-btn" onclick="editTest('${row.id}')" title="Edit">✏️</button>
+                        <button class="action-btn" onclick="deleteTest('${row.id}')" title="Delete">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
         };
 
-        // ── Column filter logic ──
         const filterTable = () => {
             const filters = Array.from(document.querySelectorAll('.table__filter-input, .table__date-input'))
                 .map(i => i.value.toLowerCase().trim());
@@ -202,7 +322,6 @@
             renderTable(filteredData);
         };
 
-        // ── Test search ──
         const testSearch = () => {
             const searchTerm = document.getElementById('testSearch').value.trim();
             if (!searchTerm) {
@@ -216,14 +335,13 @@
             renderTable(result);
         };
 
-        // Enter key on search
-        document.getElementById('testSearch').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') testSearch();
-        });
+        const setupTestSearch = () => {
+            document.getElementById('testSearch').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') testSearch();
+            });
+        };
 
-        // ── Action functions ──
         const createNewTest = () => {
-            // Show create exam modal or navigate to create page
             const examName = prompt('Enter exam name:');
             if (examName) {
                 createExam(examName);
@@ -247,7 +365,7 @@
                 
                 if (response.ok) {
                     alert('Exam created successfully!');
-                    loadExams(); // Reload the table
+                    loadExams();
                 } else {
                     const error = await response.json();
                     alert('Error creating exam: ' + error.message);
@@ -272,7 +390,6 @@
         };
 
         const exportResults = () => {
-            // Export current table data as CSV
             const csv = [
                 ['Test ID', 'Test Name', 'Category', 'Questions', 'Duration', 'Status', 'Created Date'],
                 ...filteredData.map(row => [row.id, row.name, row.category, row.questions, row.duration, row.status, row.createdDate])
@@ -336,141 +453,42 @@
             }
         };
 
-        // ── Logout ──
+        const viewResults = () => {
+            window.location.href = '/results';
+        };
+
+        const manageUsers = () => {
+            alert('User management will be implemented');
+        };
+
         const handleLogout = () => {
             if (confirm('Are you sure you want to logout?')) {
                 window.location.href = '/auth/logout';
             }
         };
 
-        // ── Navigation ──
-        const navigateTo = (section) => {
-            switch(section) {
-                case 'dashboard':
-                    window.location.href = '/dashboard';
-                    break;
-                case 'users':
-                    alert('Users section will be implemented');
-                    break;
-                case 'questions':
-                    alert('Questions section will be implemented');
-                    break;
-                case 'reports':
-                    window.location.href = '/results';
-                    break;
-                case 'settings':
-                    alert('Settings section will be implemented');
-                    break;
+        // Load user info
+        async function loadUserInfo() {
+            try {
+                const userResponse = await fetch('/auth/me');
+                if (userResponse.ok) {
+                    const user = await userResponse.json();
+                    document.getElementById('currentUser').textContent = user.name || user.email || 'Unknown User';
+                    const userInfoElement = document.getElementById('userInfo');
+                    if (userInfoElement) {
+                        userInfoElement.textContent = user.name || user.email || 'Unknown User';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
             }
-        };
+        }
 
-        // ── Initial render ──
+        // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
-            loadExams();
+            loadUserInfo();
+            loadPage('dashboard'); // Load dashboard by default
         });
     </script>
-
-    <style>
-        /* Additional styles for the new interface */
-        .user-info-bar {
-            background: white;
-            border: 1px solid var(--border);
-            padding: 10px 16px;
-            margin-bottom: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 4px;
-        }
-
-        .user-info-text {
-            font-size: 13px;
-            color: #555;
-        }
-
-        .status-active {
-            color: #28a745;
-            font-weight: 500;
-        }
-
-        .toolbar__button {
-            background: var(--glo-blue);
-            color: white;
-            border: none;
-            padding: 7px 14px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.15s;
-            white-space: nowrap;
-        }
-
-        .toolbar__button:hover {
-            background: var(--glo-blue-dark);
-        }
-
-        .btn-icon {
-            font-size: 14px;
-        }
-
-        .toolbar__search {
-            border: 1px solid var(--border);
-            background: white;
-            padding: 7px 12px;
-            font-size: 13px;
-            color: #555;
-            width: 250px;
-            outline: none;
-            margin-left: auto;
-        }
-
-        .toolbar__search:focus {
-            border-color: var(--glo-blue);
-        }
-
-        .status-badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-
-        .status-active {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-draft {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-            font-size: 14px;
-            margin-right: 4px;
-            border-radius: 3px;
-            transition: background 0.15s;
-        }
-
-        .action-btn:hover {
-            background: #f0f0f0;
-        }
-
-        /* Update column widths */
-        .col-id { width: 100px; }
-        .col-name { width: 200px; }
-        .col-category { width: 150px; }
-        .col-questions { width: 100px; }
-        .col-duration { width: 120px; }
-        .col-status { width: 100px; }
-        .col-date { width: 140px; }
-        .col-action { width: 80px; }
-    </style>
+</body>
+</html>

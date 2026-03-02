@@ -10,8 +10,20 @@ const generateToken = (id) => {
     });
 };
 
-// @route  POST /api/auth/register
-// @access Admin only
+/* ****************************************
+ *  Deliver Register View
+ * ************************************ */
+const buildRegister = async (req, res) => {
+    res.render('auth/register', {
+        title: 'Register',
+        message: null,
+        error: null
+    });
+};
+
+/* ****************************************
+ *  Process login request
+ * ************************************ */
 const register = async (req, res) => {
     try {
         const {
@@ -56,8 +68,9 @@ const register = async (req, res) => {
     }
 };
 
-
-// Deliver login view
+/* ****************************************
+ *  Deliver login View
+ * ************************************ */
 const buildLogin = async (req, res) => {
     res.render('auth/login', {
         title: 'Login',
@@ -66,9 +79,9 @@ const buildLogin = async (req, res) => {
     });
 };
 
-// Process login form submission
-// @route  POST /api/auth/login
-// @access Public
+/* ****************************************
+ *  Process login request
+ * ************************************ */
 const accountLogin = async (req, res) => {
     try {
         const {
@@ -76,8 +89,11 @@ const accountLogin = async (req, res) => {
             password
         } = req.body;
 
-        console.log("Login attempt:", { username, password });
-        
+        console.log("Login attempt:", {
+            username,
+            password,
+        });
+
         // 1. Basic validation
         if (!username || !password) {
             return res.status(400).render("auth/login", {
@@ -112,19 +128,29 @@ const accountLogin = async (req, res) => {
         // 4. Generate token and respond
         const token = generateToken(user._id);
 
-        res.render("index", {
-            title: 'Dashboard',
-            message: "logged In",
-            error: null,
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.username,
-                role: user.role
-            }
+        // Set JWT cookie
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        });
+
+        // Store user session
+        req.session.user = {
+            id: user._id,
+            name: user.name,
+            username: user.username,
+            role: user.role
+        };
+
+        res.redirect("/");
+        console.log("Login successful:", {
+            userId: user._id,
+            username: user.username,
+            role: user.role
         });
     } catch (err) {
+        console.error("Login error:", err);
         res.status(500).render("auth/login", {
             title: 'Login',
             message: null,
@@ -133,8 +159,10 @@ const accountLogin = async (req, res) => {
     }
 };
 
-// @route  GET /api/auth/me
-// @access Protected
+
+/* ****************************************
+ *  Deliver profile View
+ * ************************************ */
 const getMe = async (req, res) => {
     // req.user is already attached by protect middleware
     res.json({
@@ -164,15 +192,23 @@ const getUsers = async (req, res) => {
  *  Process logout request
  * ************************************ */
 async function accountLogout(req, res) {
-    res.clearCookie("jwt")
+    // Clear JWT cookie
+    res.clearCookie("jwt");
+    
+    // Clear session
+    req.session.destroy();
+    
     res.render("auth/login", {
         title: 'Login',
         message: 'You have been successfully logged out.',
         error: null
     })
 }
+
+
 module.exports = {
     buildLogin,
+    buildRegister,
     register,
     accountLogin,
     getMe,

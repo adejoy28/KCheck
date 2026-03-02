@@ -5,22 +5,8 @@
 
 <body>
     <div id="wrapper">
-        <% if (title !== 'Login' && title !== 'Register') { %>
-            <%- include('../partials/header') %>
-            <%- include('../partials/navigation') %>
-        <% } %>
 
-        <!-- Toast Container -->
-        <div class="toast-container" id="toastContainer"></div>
-
-        Hidden data elements for messages
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div data-error="<%= error %>" style="display: none;"></div>
-        <% } %>
-        
-        <% if (typeof message !== 'undefined' && message) { %>
-            <div data-message="<%= message %>" style="display: none;"></div>
-        <% } %>
+        <%- include('../partials/toast.ejs') %>
 
         <main>
             <%- body %>

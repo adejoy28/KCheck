@@ -1,0 +1,333 @@
+<!-- Top Bar -->
+<div class="topbar">
+    <div class="topbar__left">
+        <div class="hamburger">
+            <span class="hamburger__line"></span><span class="hamburger__line"></span><span class="hamburger__line"></span>
+        </div>
+        <div class="logo">glo</div>
+        <span class="topbar__title">KNOWLEDGE CHECK SYSTEM (CBT)</span>
+    </div>
+    <div class="topbar__right">
+        <div class="topbar__user" id="currentUser">Loading...</div>
+        <button class="topbar__logout" onclick="handleLogout()">
+            <span class="logout-icon">⏻</span> Logout
+        </button>
+    </div>
+</div>
+
+<!-- Layout -->
+<div class="layout">
+    <%- include('partials/sidebar') %>
+
+    <!-- Main -->
+    <div class="layout__main">
+        <div class="layout__content">
+            <div class="page-header">DASHBOARD</div>
+
+            <!-- User Info Bar -->
+            <div class="user-info-bar">
+                <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
+                <span class="user-info-text">Status: <span class="status-active">Active</span></span>
+            </div>
+
+            <!-- Dashboard Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📝</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalExams">0</div>
+                        <div class="stat-label">Total Exams</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="activeExams">0</div>
+                        <div class="stat-label">Active Exams</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-number" id="completedTests">0</div>
+                        <div class="stat-label">Completed Tests</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-section">
+                <h3>Recent Exams</h3>
+                <div class="table__wrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="table__header">Exam Name</th>
+                                <th class="table__header">Questions</th>
+                                <th class="table__header">Duration</th>
+                                <th class="table__header">Status</th>
+                                <th class="table__header">Created Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentExamsTable">
+                            <tr class="table__empty-row">
+                                <td colspan="5">Loading recent exams...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <h3>Quick Actions</h3>
+                <div class="quick-actions">
+                    <button class="action-card" onclick="navigateTo('tests')">
+                        <div class="action-icon">➕</div>
+                        <div class="action-title">Create New Exam</div>
+                        <div class="action-description">Create a new knowledge check exam</div>
+                    </button>
+                    <button class="action-card" onclick="viewResults()">
+                        <div class="action-icon">📈</div>
+                        <div class="action-title">View Results</div>
+                        <div class="action-description">Analyze exam performance and results</div>
+                    </button>
+                    <button class="action-card" onclick="manageUsers()">
+                        <div class="action-icon">👥</div>
+                        <div class="action-title">Manage Users</div>
+                        <div class="action-description">Add or remove system users</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <span class="footer__text">© 2024 Globacom Knowledge Check System. All rights reserved.</span>
+</div>
+
+<script>
+    // Load dashboard data
+    async function loadDashboardData() {
+        try {
+            // Load exams
+            const examsResponse = await fetch('/exams');
+            const exams = await examsResponse.json();
+            
+            // Update stats
+            document.getElementById('totalExams').textContent = exams.length;
+            document.getElementById('activeExams').textContent = exams.filter(e => e.isActive).length;
+            
+            // Update recent exams table
+            const recentExamsTable = document.getElementById('recentExamsTable');
+            if (exams.length === 0) {
+                recentExamsTable.innerHTML = '<tr class="table__empty-row"><td colspan="5">No exams found.</td></tr>';
+            } else {
+                recentExamsTable.innerHTML = exams.slice(0, 5).map(exam => `
+                    <tr>
+                        <td>${exam.title}</td>
+                        <td>${exam.questions ? exam.questions.length : 0}</td>
+                        <td>${exam.duration} min</td>
+                        <td><span class="status-badge status-${exam.isActive ? 'active' : 'inactive'}">${exam.isActive ? 'Active' : 'Inactive'}</span></td>
+                        <td>${new Date(exam.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Load user info
+            const userResponse = await fetch('/auth/me');
+            if (userResponse.ok) {
+                const user = await userResponse.json();
+                document.getElementById('currentUser').textContent = user.name || user.email || 'Unknown User';
+                document.getElementById('userInfo').textContent = user.name || user.email || 'Unknown User';
+            }
+            
+        } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            document.getElementById('recentExamsTable').innerHTML = '<tr class="table__empty-row"><td colspan="5">Error loading data.</td></tr>';
+        }
+    }
+
+    // Navigation
+    function navigateTo(section) {
+        switch(section) {
+            case 'tests':
+                window.location.href = '/';
+                break;
+            case 'users':
+                alert('Users section will be implemented');
+                break;
+            case 'questions':
+                alert('Questions section will be implemented');
+                break;
+            case 'reports':
+                alert('Reports section will be implemented');
+                break;
+            case 'settings':
+                alert('Settings section will be implemented');
+                break;
+        }
+    }
+
+    // Quick actions
+    function viewResults() {
+        window.location.href = '/results';
+    }
+
+    function manageUsers() {
+        alert('User management will be implemented');
+    }
+
+    // Logout
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/auth/logout';
+        }
+    }
+
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', loadDashboardData);
+</script>
+
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--glo-blue);
+        border-radius: 50%;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--glo-blue);
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 5px;
+    }
+
+    .dashboard-section {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-section h3 {
+        margin: 0 0 15px 0;
+        color: #333;
+        font-size: 1.2rem;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .action-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .action-card:hover {
+        background: #f8f9fa;
+        border-color: var(--glo-blue);
+        transform: translateY(-2px);
+    }
+
+    .action-icon {
+        font-size: 2rem;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--glo-blue);
+        border-radius: 50%;
+    }
+
+    .action-title {
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem;
+    }
+
+    .action-description {
+        font-size: 0.85rem;
+        color: #666;
+        text-align: center;
+    }
+
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+</style>

@@ -18,8 +18,6 @@ const {
     submitExam
 } = require('../controllers/resultController');
 
-// All exam routes require login
-router.use(protect);
 
 router.get('/', util.handleErrors(getExams)); // staff + admin
 router.get('/:id', util.handleErrors(getExamById)); // staff + admin

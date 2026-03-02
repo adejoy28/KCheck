@@ -2,23 +2,40 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+// 
+dotenv.config({
+    path: path.join(__dirname, '.env')
+});
+const cookieParser = require('cookie-parser');
 const expressLayouts = require("express-ejs-layouts")
 const mainController = require('./controllers/index.js')
 const util = require('./utilities')
 const authMiddleware = require('./middleware/auth')
 
-// 
-dotenv.config({
-    path: path.join(__dirname, '.env')
-});
 
 const app = express();
 
 const connectDb = require('./database/db.js');
 
-// Middleware
+/* *************************
+ * Middleware
+ * ************************/
 app.use(cors());
 app.use(express.json()); // parse incoming JSON
+app.use(cookieParser());
+
+// session middleware
+app.use(require('express-session')({
+    secret: process.env.JWT_SECRET || 'fallback-secret',
+    resave: false,
+    saveUninitialized: false,
+    name: 'sessionId',
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
 app.use(express.urlencoded({ extended: true })); // parse form data
 app.use(express.static(path.join(__dirname, 'public'))); // serve frontend files
 
@@ -37,18 +54,29 @@ app.set("layout", "./layouts/layout");
 // Authentication Routes
 app.use("/auth", require("./routes/auth"))
 
+// Main SPA Route
+app.get("/", authMiddleware.protect, (req, res) => {
+    res.render("main", {
+        title: 'Knowledge Check System',
+        message: null,
+        error: null
+    })
+})
 
-// Protect all routes after this point
-app.use(authMiddleware.protect)
-
-// Index Route
-app.get("/", mainController.buildHome)
+// Dashboard Route - redirect to main SPA
+app.get("/dashboard", authMiddleware.protect, (req, res) => {
+    res.render("main", {
+        title: 'Dashboard',
+        message: null,
+        error: null
+    })
+})
 
 // Exam Routes
-app.use("/exams", require("./routes/exams"))
+app.use("/exams", authMiddleware.protect, require("./routes/exams"))
 
 // Result Routes
-app.use("/results", require("./routes/results"))
+app.use("/results", authMiddleware.protect, require("./routes/results"))
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {

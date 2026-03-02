@@ -1,15 +1,16 @@
-<header id="top-header">
-    <span class="siteName">
-        <a href="/" title="Return to home page">CSE Motors</a>
-    </span>
-
-    <div id="tools">
-        <a title="Click to search vehicles" href="/inv/search"><i class="fa-solid fa-magnifying-glass"></i></a>
-        <% if (locals.loggedin) { %>
-        <a title="Account Management" href="/account/">Welcome <%= locals.accountData.account_firstname %></a>
-        <a title="Click to log out" href="/account/logout">Logout</a>
-        <% } else { %>
-        <a title="Click to log in" href="/account/login">My Account</a>
-        <% } %>
+<!-- Top Bar -->
+<div class="topbar">
+    <div class="topbar__left">
+        <div class="hamburger">
+            <span class="hamburger__line"></span><span class="hamburger__line"></span><span class="hamburger__line"></span>
+        </div>
+        <div class="logo">glo</div>
+        <span class="topbar__title">KNOWLEDGE CHECK SYSTEM (CBT)</span>
     </div>
-</header>
+    <div class="topbar__right">
+        <div class="topbar__user" id="currentUser">Loading...</div>
+        <button class="topbar__logout" onclick="handleLogout()">
+            <span class="logout-icon">⏻</span> Logout
+        </button>
+    </div>
+</div>

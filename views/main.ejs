@@ -34,22 +34,23 @@
                 <div class="page-header">DASHBOARD</div>
                 <!-- User Info Bar -->
                 <div class="user-info-bar">
-                    <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
+                    <span class="user-info-text">User Logged In: <strong><%= user ? user.name || user.email : 'Unknown User' %></strong></span>
                     <span class="user-info-text">Status: <span class="status-active">Active</span></span>
                 </div>
+                
                 <!-- Dashboard Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📝</div>
                         <div class="stat-content">
-                            <div class="stat-number" id="totalExams">0</div>
+                            <div class="stat-number"><%= exams ? exams.length : 0 %></div>
                             <div class="stat-label">Total Exams</div>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">✅</div>
                         <div class="stat-content">
-                            <div class="stat-number" id="activeExams">0</div>
+                            <div class="stat-number"><%= exams ? exams.filter(e => e.isActive).length : 0 %></div>
                             <div class="stat-label">Active Exams</div>
                         </div>
                     </div>
@@ -68,33 +69,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- Recent Activity -->
-                <div class="dashboard-section">
-                    <h3>Recent Exams</h3>
-                    <div class="table__wrap">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="table__header">Exam Name</th>
-                                    <th class="table__header">Questions</th>
-                                    <th class="table__header">Duration</th>
-                                    <th class="table__header">Status</th>
-                                    <th class="table__header">Created Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentExamsTable">
-                                <tr class="table__empty-row">
-                                    <td colspan="5">Loading recent exams...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                
                 <!-- Quick Actions -->
                 <div class="dashboard-section">
                     <h3>Quick Actions</h3>
                     <div class="quick-actions">
-                        <button class="action-card" onclick="loadPage('tests')">
+                        <button class="action-card" onclick="loadPage('createExam')">
                             <div class="action-icon">➕</div>
                             <div class="action-title">Create New Exam</div>
                             <div class="action-description">Create a new knowledge check exam</div>
@@ -111,18 +91,213 @@
                         </button>
                     </div>
                 </div>
+                
+                <!-- Exams Management Section -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h3>Exams Management</h3>
+                        <div class="section-actions">
+                            <button class="toolbar__button" onclick="loadPage('createExam')">
+                                <span class="btn-icon">➕</span> Create New Exam
+                            </button>
+                            <button class="toolbar__button" onclick="importQuestions()">
+                                <span class="btn-icon">📥</span> Import Questions
+                            </button>
+                            <button class="toolbar__button" onclick="exportResults()">
+                                <span class="btn-icon">📤</span> Export Results
+                            </button>
+                            <input class="toolbar__search" type="text" placeholder="Search exams..." id="examSearch" />
+                        </div>
+                    </div>
+                    
+                    <!-- Exams Table -->
+                    <div class="table__wrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="table__header table__cell--id">Exam ID <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--msisdn">Exam Name <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--category">Category <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--imsi">Questions <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--date">Duration <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--category">Status <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--date">Created Date <span class="table__sort">⇅</span></th>
+                                    <th class="table__header table__cell--action">Actions</th>
+                                </tr>
+                                <tr class="table__filter-row">
+                                    <th>
+                                        <div class="table__filter-wrap">
+                                            <span class="table__filter-icon">🔍</span>
+                                            <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="table__filter-wrap">
+                                            <span class="table__filter-icon">🔍</span>
+                                            <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="table__filter-wrap">
+                                            <span class="table__filter-icon">🔍</span>
+                                            <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="table__filter-wrap">
+                                            <span class="table__filter-icon">🔍</span>
+                                            <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="table__filter-wrap">
+                                            <span class="table__filter-icon">🔍</span>
+                                            <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="table__filter-wrap">
+                                            <span class="table__filter-icon">🔍</span>
+                                            <input class="table__filter-input" type="text" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="table__date-wrap">
+                                            <span class="table__filter-icon">📅</span>
+                                            <input class="table__date-input" type="date" oninput="filterTable()" />
+                                        </div>
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <% if (exams && exams.length > 0) { %>
+                                    <% exams.forEach(function(exam) { %>
+                                        <tr>
+                                            <td><span class="ellipsis-text" title="<%= exam._id %>"><%= exam._id %></span></td>
+                                            <td><%= exam.title %></td>
+                                            <td><%= exam.description || 'General' %></td>
+                                            <td><%= exam.questions ? exam.questions.length : 0 %></td>
+                                            <td><%= exam.duration %> min</td>
+                                            <td><span class="status-badge status-<%= exam.isActive ? 'active' : 'inactive' %>"><%= exam.isActive ? 'Active' : 'Draft' %></span></td>
+                                            <td><%= new Date(exam.createdAt).toLocaleDateString() %></td>
+                                            <td>
+                                                <button class="action-btn" onclick="editTest('<%= exam._id %>')" title="Edit">✏️</button>
+                                                <button class="action-btn" onclick="deleteTest('<%= exam._id %>')" title="Delete">🗑️</button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                <% } else { %>
+                                    <tr class="table__empty-row">
+                                        <td colspan="8">No exams found.</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             `,
-            tests: `
-                <div class="page-header">NEW TESTS</div>
+            createExam: `
+                <div class="page-header">CREATE NEW EXAM</div>
                 <!-- User Info Bar -->
                 <div class="user-info-bar">
                     <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
                     <span class="user-info-text">Status: <span class="status-active">Active</span></span>
                 </div>
+                
+                <!-- Exam Creation Form -->
+                <div class="exam-creation-container">
+                    <form id="examForm">
+                        <div class="exam-details-section">
+                            <h3>Exam Details</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="examTitle">Exam Title *</label>
+                                    <input type="text" id="examTitle" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="examDuration">Duration (minutes) *</label>
+                                    <input type="number" id="examDuration" name="duration" min="1" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="examDescription">Description</label>
+                                <textarea id="examDescription" name="description" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-section">
+                            <div class="questions-header">
+                                <h3>Questions</h3>
+                                <button type="button" class="btn btn--primary" onclick="addQuestion()">Add Question</button>
+                            </div>
+                            <div id="questionsContainer"></div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn--secondary" onclick="loadPage('exam')">Cancel</button>
+                            <button type="button" class="btn btn--primary" onclick="saveExam()">Create Exam</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            editExam: `
+                <div class="page-header">EDIT EXAM</div>
+                <!-- User Info Bar -->
+                <div class="user-info-bar">
+                    <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
+                    <span class="user-info-text">Status: <span class="status-active">Active</span></span>
+                </div>
+                
+                <!-- Exam Edit Form -->
+                <div class="exam-creation-container">
+                    <form id="examEditForm">
+                        <input type="hidden" id="examId" name="examId">
+                        <div class="exam-details-section">
+                            <h3>Exam Details</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="examTitle">Exam Title *</label>
+                                    <input type="text" id="examTitle" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="examDuration">Duration (minutes) *</label>
+                                    <input type="number" id="examDuration" name="duration" min="1" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="examDescription">Description</label>
+                                <textarea id="examDescription" name="description" rows="3"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-section">
+                            <div class="questions-header">
+                                <h3>Questions</h3>
+                                <button type="button" class="btn btn--primary" onclick="addQuestion()">Add Question</button>
+                            </div>
+                            <div id="questionsContainer"></div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn--secondary" onclick="loadPage('exam')">Cancel</button>
+                            <button type="button" class="btn btn--primary" onclick="updateExam()">Update Exam</button>
+                        </div>
+                    </form>
+                </div>
+            `,
+            exam: `
+                <div class="page-header">EXAMS MANAGEMENT</div>
+                <!-- User Info Bar -->
+                <div class="user-info-bar">
+                    <span class="user-info-text">User Logged In: <strong id="userInfo">Loading...</strong></span>
+                    <span class="user-info-text">Status: <span class="status-active">Active</span></span>
+                </div>
+                
                 <!-- Toolbar -->
                 <div class="toolbar">
-                    <button class="toolbar__button" onclick="createNewTest()">
-                        <span class="btn-icon">➕</span> Create New Test
+                    <button class="toolbar__button" onclick="loadPage('createExam')">
+                        <span class="btn-icon">➕</span> Create New Exam
                     </button>
                     <button class="toolbar__button" onclick="importQuestions()">
                         <span class="btn-icon">📥</span> Import Questions
@@ -130,15 +305,16 @@
                     <button class="toolbar__button" onclick="exportResults()">
                         <span class="btn-icon">📤</span> Export Results
                     </button>
-                    <input class="toolbar__search" type="text" placeholder="Search tests..." id="testSearch" />
+                    <input class="toolbar__search" type="text" placeholder="Search exams..." id="examSearch" />
                 </div>
-                <!-- Table -->
+                
+                <!-- Exams Table -->
                 <div class="table__wrap">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="table__header table__cell--id">Test ID <span class="table__sort">⇅</span></th>
-                                <th class="table__header table__cell--msisdn">Test Name <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--id">Exam ID <span class="table__sort">⇅</span></th>
+                                <th class="table__header table__cell--msisdn">Exam Name <span class="table__sort">⇅</span></th>
                                 <th class="table__header table__cell--category">Category <span class="table__sort">⇅</span></th>
                                 <th class="table__header table__cell--imsi">Questions <span class="table__sort">⇅</span></th>
                                 <th class="table__header table__cell--date">Duration <span class="table__sort">⇅</span></th>
@@ -194,7 +370,7 @@
                         </thead>
                         <tbody id="tableBody">
                             <tr class="table__empty-row">
-                                <td colspan="8">No tests to display.</td>
+                                <td colspan="8">Loading exams...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -209,13 +385,48 @@
         // Load page content dynamically
         function loadPage(page) {
             const content = document.getElementById('mainContent');
-            content.innerHTML = pageTemplates[page] || '<div class="page-header">PAGE NOT FOUND</div>';
+            
+            if (!pageTemplates[page]) {
+                content.innerHTML = '<div class="page-header">PAGE NOT FOUND</div>';
+                return;
+            }
+            
+            content.innerHTML = pageTemplates[page];
             
             // Update sidebar active state
             document.querySelectorAll('.sidebar__item').forEach(item => {
                 item.classList.remove('sidebar__item--active');
             });
-            event.target.closest('.sidebar__item').classList.add('sidebar__item--active');
+            
+            // Set active sidebar item
+            try {
+                if (event && event.target && typeof event.target.closest === 'function') {
+                    // Called from click event
+                    const sidebarItem = event.target.closest('.sidebar__item');
+                    if (sidebarItem) {
+                        sidebarItem.classList.add('sidebar__item--active');
+                    }
+                } else {
+                    // Called programmatically (e.g., on page load)
+                    // Find and activate the corresponding sidebar item
+                    const sidebarItems = document.querySelectorAll('.sidebar__item');
+                    sidebarItems.forEach(item => {
+                        const onclick = item.getAttribute('onclick');
+                        if (onclick && onclick.includes(`'${page}'`)) {
+                            item.classList.add('sidebar__item--active');
+                        }
+                    });
+                }
+            } catch (error) {
+                // Fallback: try to find sidebar item by page name
+                const sidebarItems = document.querySelectorAll('.sidebar__item');
+                sidebarItems.forEach(item => {
+                    const onclick = item.getAttribute('onclick');
+                    if (onclick && onclick.includes(`'${page}'`)) {
+                        item.classList.add('sidebar__item--active');
+                    }
+                });
+            }
             
             // Initialize page-specific functionality
             initializePage(page);
@@ -224,39 +435,56 @@
         // Initialize page-specific functionality
         function initializePage(page) {
             if (page === 'dashboard') {
-                loadDashboardData();
-            } else if (page === 'tests') {
+                // Data is now loaded server-side, no need for client-side loading
+                setupExamSearch();
+            } else if (page === 'exam') {
                 loadExams();
-                setupTestSearch();
+                setupExamSearch();
+            } else if (page === 'createExam') {
+                questions = [];
+                renderQuestions();
+            } else if (page === 'editExam') {
+                loadExamForEdit();
             }
         }
 
-        // Load dashboard data
+        // Load dashboard data (kept for potential future use, but not called for dashboard page)
         async function loadDashboardData() {
             try {
                 const examsResponse = await fetch('/exams');
                 const exams = await examsResponse.json();
                 
-                document.getElementById('totalExams').textContent = exams.length;
-                document.getElementById('activeExams').textContent = exams.filter(e => e.isActive).length;
+                // Update stats
+                const totalExamsElement = document.getElementById('totalExams');
+                const activeExamsElement = document.getElementById('activeExams');
                 
-                const recentExamsTable = document.getElementById('recentExamsTable');
-                if (exams.length === 0) {
-                    recentExamsTable.innerHTML = '<tr class="table__empty-row"><td colspan="5">No exams found.</td></tr>';
-                } else {
-                    recentExamsTable.innerHTML = exams.slice(0, 5).map(exam => `
-                        <tr>
-                            <td>${exam.title}</td>
-                            <td>${exam.questions ? exam.questions.length : 0}</td>
-                            <td>${exam.duration} min</td>
-                            <td><span class="status-badge status-${exam.isActive ? 'active' : 'inactive'}">${exam.isActive ? 'Active' : 'Inactive'}</span></td>
-                            <td>${new Date(exam.createdAt).toLocaleDateString()}</td>
-                        </tr>
-                    `).join('');
+                if (totalExamsElement) {
+                    totalExamsElement.textContent = exams.length;
                 }
+                
+                if (activeExamsElement) {
+                    activeExamsElement.textContent = exams.filter(e => e.isActive).length;
+                }
+                
+                // Update exams table
+                allData = exams.map(exam => ({
+                    id: exam._id,
+                    name: exam.title,
+                    category: exam.description || 'General',
+                    questions: exam.questions ? exam.questions.length : 0,
+                    duration: `${exam.duration} min`,
+                    status: exam.isActive ? 'Active' : 'Draft',
+                    createdDate: new Date(exam.createdAt).toLocaleDateString()
+                }));
+                
+                filteredData = [...allData];
+                renderTable(filteredData);
+                
             } catch (error) {
-                console.error('Error loading dashboard data:', error);
-                document.getElementById('recentExamsTable').innerHTML = '<tr class="table__empty-row"><td colspan="5">Error loading data.</td></tr>';
+                const tableBody = document.getElementById('tableBody');
+                if (tableBody) {
+                    tableBody.innerHTML = '<tr class="table__empty-row"><td colspan="8">Error loading exams. Please try again.</td></tr>';
+                }
             }
         }
 
@@ -289,13 +517,19 @@
 
         const renderTable = (data) => {
             const tbody = document.getElementById('tableBody');
+            
+            if (!tbody) {
+                return;
+            }
+            
             if (data.length === 0) {
                 tbody.innerHTML = `<tr class="table__empty-row"><td colspan="8">No tests to display.</td></tr>`;
                 return;
             }
+            
             tbody.innerHTML = data.map(row => `
                 <tr>
-                    <td>${row.id}</td>
+                    <td><span class="ellipsis-text" title="${row.id}">${row.id}</span></td>
                     <td>${row.name}</td>
                     <td>${row.category}</td>
                     <td>${row.questions}</td>
@@ -322,8 +556,8 @@
             renderTable(filteredData);
         };
 
-        const testSearch = () => {
-            const searchTerm = document.getElementById('testSearch').value.trim();
+        const examSearch = () => {
+            const searchTerm = document.getElementById('examSearch').value.trim();
             if (!searchTerm) {
                 renderTable(allData);
                 return;
@@ -335,37 +569,146 @@
             renderTable(result);
         };
 
-        const setupTestSearch = () => {
-            document.getElementById('testSearch').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') testSearch();
-            });
-        };
-
-        const createNewTest = () => {
-            const examName = prompt('Enter exam name:');
-            if (examName) {
-                createExam(examName);
+        const setupExamSearch = () => {
+            const examSearchElement = document.getElementById('examSearch');
+            if (examSearchElement) {
+                examSearchElement.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') examSearch();
+                });
             }
         };
 
-        async function createExam(title) {
+        // Questions management
+        let questions = [];
+
+        const addQuestion = () => {
+            const question = {
+                text: '',
+                options: ['', '', '', ''],
+                correctAnswer: 0
+            };
+            questions.push(question);
+            renderQuestions();
+        };
+
+        const removeQuestion = (index) => {
+            questions.splice(index, 1);
+            renderQuestions();
+        };
+
+        const updateQuestion = (index, field, value) => {
+            if (field === 'correctAnswer') {
+                questions[index][field] = parseInt(value);
+            } else if (field === 'text') {
+                questions[index][field] = value;
+            } else if (field.startsWith('option')) {
+                const optionIndex = parseInt(field.replace('option', ''));
+                questions[index].options[optionIndex] = value;
+            }
+        };
+
+        const renderQuestions = () => {
+            const container = document.getElementById('questionsContainer');
+            
+            if (questions.length === 0) {
+                container.innerHTML = '<p class="no-questions">No questions added yet. Click "Add Question" to start.</p>';
+                return;
+            }
+
+            container.innerHTML = questions.map((q, index) => `
+                <div class="question-card" data-index="${index}">
+                    <div class="question-header">
+                        <h4>Question ${index + 1}</h4>
+                        <button type="button" class="btn btn--danger btn--small" onclick="removeQuestion(${index})">Remove</button>
+                    </div>
+                    <div class="question-body">
+                        <div class="form-group">
+                            <label>Question Text *</label>
+                            <input type="text" value="${q.text}" onchange="updateQuestion(${index}, 'text', this.value)" required>
+                        </div>
+                        <div class="options-group">
+                            <label>Options *</label>
+                            ${q.options.map((option, optIndex) => `
+                                <div class="option-row">
+                                    <input type="radio" name="correct${index}" value="${optIndex}" ${q.correctAnswer === optIndex ? 'checked' : ''} onchange="updateQuestion(${index}, 'correctAnswer', this.value)">
+                                    <input type="text" value="${option}" placeholder="Option ${optIndex + 1}" onchange="updateQuestion(${index}, 'option${optIndex}', this.value)" required>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        const validateExam = () => {
+            const title = document.getElementById('examTitle').value.trim();
+            const duration = document.getElementById('examDuration').value;
+
+            if (!title) {
+                alert('Please enter an exam title');
+                return false;
+            }
+
+            if (!duration || duration < 1) {
+                alert('Please enter a valid duration (minimum 1 minute)');
+                return false;
+            }
+
+            if (questions.length === 0) {
+                alert('Please add at least one question');
+                return false;
+            }
+
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                if (!q.text.trim()) {
+                    alert(`Question ${i + 1}: Please enter question text`);
+                    return false;
+                }
+
+                const validOptions = q.options.filter(opt => opt.trim());
+                if (validOptions.length < 2) {
+                    alert(`Question ${i + 1}: Please enter at least 2 options`);
+                    return false;
+                }
+
+                if (q.correctAnswer < 0 || q.correctAnswer >= q.options.length || !q.options[q.correctAnswer].trim()) {
+                    alert(`Question ${i + 1}: Please select a valid correct answer`);
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        async function saveExam() {
+            if (!validateExam()) {
+                return;
+            }
+
+            const examData = {
+                title: document.getElementById('examTitle').value.trim(),
+                description: document.getElementById('examDescription').value.trim(),
+                duration: parseInt(document.getElementById('examDuration').value),
+                questions: questions.map(q => ({
+                    text: q.text.trim(),
+                    options: q.options.map(opt => opt.trim()).filter(opt => opt),
+                    correctAnswer: q.correctAnswer
+                }))
+            };
+
             try {
                 const response = await fetch('/exams', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        title: title,
-                        description: 'General exam',
-                        duration: 60,
-                        questions: []
-                    })
+                    body: JSON.stringify(examData)
                 });
                 
                 if (response.ok) {
                     alert('Exam created successfully!');
-                    loadExams();
+                    loadPage('exam');
                 } else {
                     const error = await response.json();
                     alert('Error creating exam: ' + error.message);
@@ -404,33 +747,82 @@
         };
 
         const editTest = async (testId) => {
+            // Store the exam ID and navigate to edit page
+            window.currentExamId = testId;
+            loadPage('editExam');
+        };
+
+        // Load exam data for editing
+        async function loadExamForEdit() {
+            if (!window.currentExamId) {
+                alert('No exam ID provided for editing');
+                return;
+            }
+
             try {
-                const response = await fetch(`/exams/${testId}`);
+                const response = await fetch(`/exams/${window.currentExamId}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load exam data');
+                }
+                
                 const exam = await response.json();
                 
-                const newName = prompt('Enter new exam name:', exam.title);
-                if (newName && newName !== exam.title) {
-                    const updateResponse = await fetch(`/exams/${testId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ title: newName })
-                    });
-                    
-                    if (updateResponse.ok) {
-                        alert('Exam updated successfully!');
-                        loadExams();
-                    } else {
-                        const error = await updateResponse.json();
-                        alert('Error updating exam: ' + error.message);
-                    }
+                // Populate exam details
+                document.getElementById('examId').value = exam._id;
+                document.getElementById('examTitle').value = exam.title || '';
+                document.getElementById('examDuration').value = exam.duration || 60;
+                document.getElementById('examDescription').value = exam.description || '';
+                
+                // Load questions
+                questions = exam.questions || [];
+                renderQuestions();
+                
+            } catch (error) {
+                alert('Error loading exam data. Please try again.');
+                loadPage('exam');
+            }
+        }
+
+        // Update exam with edited data
+        async function updateExam() {
+            if (!validateExam()) {
+                return;
+            }
+
+            const examId = document.getElementById('examId').value;
+            const examData = {
+                title: document.getElementById('examTitle').value.trim(),
+                description: document.getElementById('examDescription').value.trim(),
+                duration: parseInt(document.getElementById('examDuration').value),
+                questions: questions.map(q => ({
+                    text: q.text.trim(),
+                    options: q.options.map(opt => opt.trim()).filter(opt => opt),
+                    correctAnswer: q.correctAnswer
+                }))
+            };
+
+            try {
+                const response = await fetch(`/exams/${examId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(examData)
+                });
+                
+                if (response.ok) {
+                    alert('Exam updated successfully!');
+                    loadPage('exam');
+                } else {
+                    const error = await response.json();
+                    alert('Error updating exam: ' + error.message);
                 }
             } catch (error) {
-                console.error('Error editing exam:', error);
-                alert('Error editing exam. Please try again.');
+                console.error('Error updating exam:', error);
+                alert('Error updating exam. Please try again.');
             }
-        };
+        }
 
         const deleteTest = async (testId) => {
             if (confirm(`Are you sure you want to delete test ${testId}?`)) {

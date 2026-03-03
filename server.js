@@ -55,21 +55,81 @@ app.set("layout", "./layouts/layout");
 app.use("/auth", require("./routes/auth"))
 
 // Main SPA Route
-app.get("/", authMiddleware.protect, (req, res) => {
-    res.render("main", {
-        title: 'Knowledge Check System',
-        message: null,
-        error: null
-    })
+app.get("/", authMiddleware.protect, async (req, res) => {
+    try {
+        // Fetch exams data
+        const Exam = require('./models/Exam');
+        const exams = await Exam.find({});
+        
+        res.render("main", {
+            title: 'Knowledge Check System',
+            message: null,
+            error: null,
+            exams: exams,
+            user: req.user
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.render("main", {
+            title: 'Knowledge Check System',
+            message: null,
+            error: null,
+            exams: [],
+            user: req.user
+        });
+    }
 })
 
 // Dashboard Route - redirect to main SPA
-app.get("/dashboard", authMiddleware.protect, (req, res) => {
-    res.render("main", {
-        title: 'Dashboard',
-        message: null,
-        error: null
-    })
+app.get("/dashboard", authMiddleware.protect, async (req, res) => {
+    try {
+        // Fetch exams data
+        const Exam = require('./models/Exam');
+        const exams = await Exam.find({});
+        
+        res.render("main", {
+            title: 'Knowledge Check System - Dashboard',
+            message: null,
+            error: null,
+            exams: exams,
+            user: req.user
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.render("main", {
+            title: 'Knowledge Check System - Dashboard',
+            message: null,
+            error: null,
+            exams: [],
+            user: req.user
+        });
+    }
+})
+
+// Exams Management Route
+app.get("/exams-management", authMiddleware.protect, async (req, res) => {
+    try {
+        // Fetch exams data
+        const Exam = require('./models/Exam');
+        const exams = await Exam.find({});
+        
+        res.render("main", {
+            title: 'Knowledge Check System - Exams Management',
+            message: null,
+            error: null,
+            exams: exams,
+            user: req.user
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        res.render("main", {
+            title: 'Knowledge Check System - Exams Management',
+            message: null,
+            error: null,
+            exams: [],
+            user: req.user
+        });
+    }
 })
 
 // Exam Routes

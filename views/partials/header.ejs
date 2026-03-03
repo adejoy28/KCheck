@@ -4,11 +4,13 @@
         <div class="hamburger">
             <span class="hamburger__line"></span><span class="hamburger__line"></span><span class="hamburger__line"></span>
         </div>
-        <div class="logo">glo</div>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Globacom Logo" class="logo__image">
+        </div>
         <span class="topbar__title">KNOWLEDGE CHECK SYSTEM (CBT)</span>
     </div>
     <div class="topbar__right">
-        <div class="topbar__user" id="currentUser">Loading...</div>
+        <div class="topbar__user"><%= user ? user.name || user.email : 'Unknown User' %></div>
         <button class="topbar__logout" onclick="handleLogout()">
             <span class="logout-icon">⏻</span> Logout
         </button>
